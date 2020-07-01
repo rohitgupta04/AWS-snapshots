@@ -1,4 +1,5 @@
 import boto3
+import botocore
 import click
 
 session = boto3.Session(profile_name='shotty')
@@ -41,8 +42,12 @@ def stop_instances():
     instances=ec2.instances.all()
     for i in instances:
         print("stopping ".format (i.id))
-        if i.state['Name'] != 'terminated':
-            i.stop()
+        try:
+            if i.state['Name'] != 'terminated':
+                i.stop()
+        except botocore.exceptions.Clienterror as e:
+            print("could not stop {0}." .format(i.id) + str(e))
+            continue
     return
 
 @instances.command('start')
@@ -52,8 +57,13 @@ def start_instances():
     instances=ec2.instances.all()
     for i in instances:
         print("starting ".format (i.id))
-        if i.state['Name'] != 'terminated':
-            i.start()
+
+        try:
+            if i.state['Name'] != 'terminated':
+                i.start()
+        except botocore.exceptions.Clienterror as e:
+            print("could not start {0}." .format(i.id) + str(e))
+            continue
     return
 
 @volumes.command('list')
