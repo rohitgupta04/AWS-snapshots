@@ -101,10 +101,26 @@ def list_snapshots():
 def create_snapshot():
     "Create snapshots of EC2 instances"
 
-    for i in instances():
+    instances=[]
+    instances=ec2.instances.all()
+    for i in instances:
+
+        print("stopping {0}...",format(i.id))
+
+        i.stop()
+        i.wait_until_stopped()
+
         for v in i.volumes.all():
             print("creating snapshot of {0}".format(v.id))
             v.create_snapshot(Description="Created by Shotty")
+
+        print("starting {0}...",format(i.id))
+
+        i.start()
+        i.wait_until_running()
+
+    print("jobs done")
+
     return
 
 if __name__ == '__main__':
