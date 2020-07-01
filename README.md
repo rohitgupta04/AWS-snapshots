@@ -10,6 +10,7 @@ make sure to install boto3 and ipython using pipenv
 
 ## Running
 
-pipenv run python shotty.py <command>
+pipenv run python shotty.py <type> <command>
 
-*command" is list, start or stop
+*type* is instances, volumes or snapshots
+*command* is list, start or stop
